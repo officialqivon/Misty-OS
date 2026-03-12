@@ -1,0 +1,23 @@
+name: build-iso
+on:
+  workflow_dispatch: # This adds the "Run Workflow" button in GitHub Actions
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Build ISO
+        uses: blue-build/apps-action@v1.5
+        with:
+          # This tells the builder to use the image you just successfully pushed
+          image-name: mistyos
+          image-tag: latest
+          registry-operator: officialqivon # Your GitHub username
+          # This enables the "Try" mode on the USB
+          iso-live-mode: true
