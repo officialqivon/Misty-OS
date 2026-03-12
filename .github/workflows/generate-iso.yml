@@ -13,8 +13,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build ISO
-        uses: blue-build/isogenerator@v1
+        uses: blue-build/apps-action@v1.6
         with:
+          # This connects to the new BlueBuild apps system
           image-name: mistyos
           image-tag: latest
           registry-operator: officialqivon
