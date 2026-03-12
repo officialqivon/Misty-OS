@@ -1,4 +1,4 @@
-name: build-iso
+name: Generate MistyOS ISO
 on:
   workflow_dispatch: # This adds the "Run Workflow" button in GitHub Actions
 jobs:
@@ -12,7 +12,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-   - name: Build ISO
+      - name: Build ISO
         uses: blue-build/mk-isogen@v1
         with:
           image-name: mistyos
