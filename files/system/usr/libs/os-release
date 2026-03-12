@@ -1,8 +1,7 @@
 NAME="MistyOS"
 ID=mistyos
 ID_LIKE="bazzite fedora"
-PRETTY_NAME="MistyOS (Gaming-Inflated)"
+PRETTY_NAME="MistyOS"
 ANSI_COLOR="0;34"
-HOME_URL="https://github.com/YOUR_GITHUB_NAME/mistyos"
 VARIANT="Gaming"
 VARIANT_ID=gaming
