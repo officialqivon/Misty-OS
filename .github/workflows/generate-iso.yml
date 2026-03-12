@@ -1,6 +1,6 @@
 name: Generate MistyOS ISO
 on:
-  workflow_dispatch: # This adds the "Run Workflow" button in GitHub Actions
+  workflow_dispatch:
 jobs:
   build-iso:
     runs-on: ubuntu-latest
@@ -13,10 +13,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build ISO
-        uses: blue-build/apps-action@v1.6
+        uses: jasonn3/build-container-installer@v1.4.0
+        id: build
         with:
-          # This connects to the new BlueBuild apps system
-          image-name: mistyos
-          image-tag: latest
-          registry-operator: officialqivon
-          iso-live-mode: true
+          arch: x86_64
+          image_name: mistyos
+          image_repo: ghcr.io/officialqivon
+          image_tag: latest
+          version: 41 # Change to 40 if your recipe is based on Fedora 40
+          variant: Kinoite # Use 'Silverblue' instead if you are building a GNOME desktop
+          iso_name: mistyos-installer.iso
+
+      - name: Upload ISO as artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.iso_name }}
+          path: |
+            ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}
+            ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}-CHECKSUM
