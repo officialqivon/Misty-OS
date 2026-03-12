@@ -12,12 +12,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Build ISO
-        uses: blue-build/apps-action@v1.5
+   - name: Build ISO
+        uses: blue-build/mk-isogen@v1
         with:
-          # This tells the builder to use the image you just successfully pushed
           image-name: mistyos
           image-tag: latest
-          registry-operator: officialqivon # Your GitHub username
-          # This enables the "Try" mode on the USB
+          registry-operator: officialqivon
           iso-live-mode: true
