@@ -24,12 +24,7 @@ modules:
       - micro
       - starship
       - fastfetch # Essential for that "I use a custom OS" flex
-      - mango-hud # Pre-baked overlay for gaming stats
-    remove:
-        # example: removing firefox (in favor of the flatpak)
-        # "firefox" is the main package, "firefox-langpacks" is a dependency
-      - firefox
-      - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+      - mangohud # Pre-baked overlay for gaming stats
 
   - type: default-flatpaks
     configurations:
