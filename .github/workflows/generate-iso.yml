@@ -38,15 +38,19 @@ jobs:
             ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}
             ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}-CHECKSUM
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-        with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: MistyOS Build ${{ github.run_number }}
-          # THE FIX: Uses the exact output path from the builder
-          files: |
-            ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}
-            ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}-CHECKSUM
+      - name: Create Release (Large File Support)
+        run: |
+          # Create the release first (it's okay if it already exists)
+          gh release create v1.0.${{ github.run_number }} \
+            --title "MistyOS Build ${{ github.run_number }}" \
+            --notes "Automated build of MistyOS" \
+            --repo ${{ github.repository }} || echo "Release already exists"
+
+          # Upload the heavy lifting files
+          echo "Uploading ISO... this will take a while."
+          gh release upload v1.0.${{ github.run_number }} \
+            "${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}" \
+            "${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}-CHECKSUM" \
+            --repo ${{ github.repository }} --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
