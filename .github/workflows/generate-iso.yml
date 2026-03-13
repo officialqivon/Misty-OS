@@ -1,13 +1,15 @@
 name: Generate MistyOS ISO
 on:
   workflow_dispatch:
+
 jobs:
   build-iso:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # THE FIX: Changed from 'read' to 'write' for the release
       packages: write
       id-token: write
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -20,28 +22,31 @@ jobs:
           image_name: mistyos
           image_repo: ghcr.io/officialqivon
           image_tag: latest
-          version: 43 # Change to 40 if your recipe is based on Fedora 40
-          variant: Kinoite # Use 'Silverblue' instead if you are building a GNOME desktop
+          version: 43
+          variant: Kinoite
           iso_name: MistyOS.iso
-          display_name: "MistyOS" # This forces the boot menu to show "MistyOS"
-          enable_live_workstation: true # This gives you the Live Desktop
-          enable_moby_workaround: true # Prevents crashes on large 7GB+ images
+          display_name: "MistyOS"
+          enable_live_workstation: true
+          enable_moby_workaround: true
 
       - name: Upload ISO as artifact
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.build.outputs.iso_name }}
+          name: MistyOS-Artifact # Giving it a simple name helps for debugging
           path: |
             ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}
             ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}-CHECKSUM
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         with:
           tag_name: v1.0.${{ github.run_number }}
           name: MistyOS Build ${{ github.run_number }}
+          # THE FIX: Uses the exact output path from the builder
           files: |
-            ./output/*.iso
+            ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}
+            ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}-CHECKSUM
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
