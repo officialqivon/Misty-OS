@@ -38,19 +38,15 @@ jobs:
             ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}
             ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}-CHECKSUM
 
-      - name: Create Release (Large File Support)
+      - name: Split and Upload
         run: |
-          # Create the release first (it's okay if it already exists)
-          gh release create v1.0.${{ github.run_number }} \
-            --title "MistyOS Build ${{ github.run_number }}" \
-            --notes "Automated build of MistyOS" \
-            --repo ${{ github.repository }} || echo "Release already exists"
-
-          # Upload the heavy lifting files
-          echo "Uploading ISO... this will take a while."
-          gh release upload v1.0.${{ github.run_number }} \
-            "${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}" \
-            "${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}-CHECKSUM" \
-            --repo ${{ github.repository }} --clobber
+          # Create the release
+          gh release create v1.0.${{ github.run_number }} --title "MistyOS Build ${{ github.run_number }}" --notes "Download all parts and run 'cat MistyOS.iso.part* > MistyOS.iso' to combine." --repo ${{ github.repository }} || echo "Exists"
+          
+          # Chop the ISO into 2GB pieces
+          split -b 2000M "${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}" MistyOS.iso.part
+          
+          # Upload the pieces
+          gh release upload v1.0.${{ github.run_number }} MistyOS.iso.part* --repo ${{ github.repository }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
