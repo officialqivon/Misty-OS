@@ -20,9 +20,12 @@ jobs:
           image_name: mistyos
           image_repo: ghcr.io/officialqivon
           image_tag: latest
-          version: 41 # Change to 40 if your recipe is based on Fedora 40
+          version: 43 # Change to 40 if your recipe is based on Fedora 40
           variant: Kinoite # Use 'Silverblue' instead if you are building a GNOME desktop
-          iso_name: mistyos-installer.iso
+          iso_name: MistyOS.iso
+          display_name: "MistyOS" # This forces the boot menu to show "MistyOS"
+          enable_live_workstation: true # This gives you the Live Desktop
+          enable_moby_workaround: true # Prevents crashes on large 7GB+ images
 
       - name: Upload ISO as artifact
         id: upload
