@@ -19,9 +19,6 @@ jobs:
 
       - name: Build ISO
         uses: ublue-os/titanoboa@main
-
-      - name: Build ISO
-        uses: ublue-os/titanoboa@main
         id: build
         with:
           image-ref: ghcr.io/officialqivon/mistyos:latest
