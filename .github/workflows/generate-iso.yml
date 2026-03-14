@@ -19,6 +19,7 @@ jobs:
         id: build
         with:
           image-ref: ghcr.io/officialqivon/mistyos:latest
+          hook-post-rootfs: ${{ github.workspace }}/installer/configure-iso.sh
           compression: squashfs
 
       - name: Upload ISO as artifact
