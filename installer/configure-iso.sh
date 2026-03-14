@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eoux pipefail
+set -oux pipefail
 
 # Install Anaconda Web UI installer
 dnf install -y anaconda-live anaconda-webui firefox --allowerasing
