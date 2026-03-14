@@ -28,7 +28,7 @@ jobs:
           display_name: "MistyOS"
           enable_live_workstation: true
           enable_moby_workaround: true
-          extra_boot_params: "liveimg rd.live.image quiet splash"
+          extra_boot_params: "liveimg rd.live.image inst.webui quiet splash"
 
       - name: Upload ISO as artifact
         id: upload
