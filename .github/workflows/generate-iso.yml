@@ -25,7 +25,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MistyOS-ISO
-          path: ${{ steps.build.outputs.iso_dest }}
+          path: /home/runner/work/_actions/ublue-os/titanoboa/main/output.iso
 
       - name: Split and Upload Release
         run: |
@@ -33,7 +33,7 @@ jobs:
             --title "MistyOS Build ${{ github.run_number }}" \
             --notes "Download all parts and run 'cat MistyOS.iso.part* > MistyOS.iso' to combine." \
             --repo ${{ github.repository }} || echo "Exists"
-          split -b 2000M "${{ steps.build.outputs.iso_dest }}" MistyOS.iso.part
+          split -b 2000M /home/runner/work/_actions/ublue-os/titanoboa/main/output.iso MistyOS.iso.part
           gh release upload v1.0.${{ github.run_number }} MistyOS.iso.part* \
             --repo ${{ github.repository }}
         env:
