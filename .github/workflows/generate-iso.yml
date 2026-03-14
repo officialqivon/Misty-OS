@@ -22,7 +22,7 @@ jobs:
           compression: squashfs
 
       - name: Upload ISO as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: MistyOS-ISO
           path: /home/runner/work/_actions/ublue-os/titanoboa/main/output.iso
