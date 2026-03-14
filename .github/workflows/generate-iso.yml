@@ -6,10 +6,9 @@ jobs:
   build-iso:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # THE FIX: Changed from 'read' to 'write' for the release
+      contents: write
       packages: write
       id-token: write
-
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -23,32 +22,31 @@ jobs:
           image_repo: ghcr.io/officialqivon
           image_tag: latest
           version: 43
-          # CHANGE 1: Use the Bazzite variant specifically
-          variant: Bazzite
+          variant: Kinoite   # ← Valid variant. Gives you KDE + pulls webui-capable installer
           iso_name: MistyOS.iso
-          # CHANGE 2: These flags force the Live Desktop + New Web UI
-          enable_live_workstation: true
-          enable_moby_workaround: true
-          extra_boot_params: "liveimg inst.webui quiet splash"
+          webui: true        # ← THIS is the actual input to enable Anaconda Web UI
 
       - name: Upload ISO as artifact
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: MistyOS-Artifact # Giving it a simple name helps for debugging
+          name: MistyOS-Artifact
           path: |
             ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}
             ${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}-CHECKSUM
 
       - name: Split and Upload
         run: |
-          # Create the release
-          gh release create v1.0.${{ github.run_number }} --title "MistyOS Build ${{ github.run_number }}" --notes "Download all parts and run 'cat MistyOS.iso.part* > MistyOS.iso' to combine." --repo ${{ github.repository }} || echo "Exists"
-          
-          # Chop the ISO into 2GB pieces
-          split -b 2000M "${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}" MistyOS.iso.part
-          
-          # Upload the pieces
-          gh release upload v1.0.${{ github.run_number }} MistyOS.iso.part* --repo ${{ github.repository }}
+          gh release create v1.0.${{ github.run_number }} \
+            --title "MistyOS Build ${{ github.run_number }}" \
+            --notes "Download all parts and run 'cat MistyOS.iso.part* > MistyOS.iso' to combine." \
+            --repo ${{ github.repository }} || echo "Exists"
+
+          split -b 2000M \
+            "${{ steps.build.outputs.iso_path }}/${{ steps.build.outputs.iso_name }}" \
+            MistyOS.iso.part
+
+          gh release upload v1.0.${{ github.run_number }} MistyOS.iso.part* \
+            --repo ${{ github.repository }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
