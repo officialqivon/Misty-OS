@@ -1,7 +1,6 @@
 name: Generate MistyOS ISO
 on:
   workflow_dispatch:
-
 jobs:
   build-iso:
     runs-on: ubuntu-24.04
@@ -20,14 +19,13 @@ jobs:
         id: build
         with:
           image-ref: ghcr.io/officialqivon/mistyos:latest
-          hook-post-rootfs: ${{ github.workspace }}/installer/configure-iso.sh
           compression: squashfs
 
       - name: Upload ISO as artifact
         uses: actions/upload-artifact@v4
         with:
           name: MistyOS-ISO
-          path: output.iso
+          path: ${{ steps.build.outputs.iso_dest }}
 
       - name: Split and Upload Release
         run: |
@@ -35,9 +33,7 @@ jobs:
             --title "MistyOS Build ${{ github.run_number }}" \
             --notes "Download all parts and run 'cat MistyOS.iso.part* > MistyOS.iso' to combine." \
             --repo ${{ github.repository }} || echo "Exists"
-
-          split -b 2000M output.iso MistyOS.iso.part
-
+          split -b 2000M "${{ steps.build.outputs.iso_dest }}" MistyOS.iso.part
           gh release upload v1.0.${{ github.run_number }} MistyOS.iso.part* \
             --repo ${{ github.repository }}
         env:
