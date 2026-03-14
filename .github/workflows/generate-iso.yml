@@ -12,7 +12,7 @@ jobs:
         uses: ublue-os/remove-unwanted-software@v9
 
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Make hook executable
         run: chmod +x ${{ github.workspace }}/installer/configure-iso.sh
