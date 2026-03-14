@@ -23,12 +23,13 @@ jobs:
           image_repo: ghcr.io/officialqivon
           image_tag: latest
           version: 43
-          variant: Kinoite
+          # CHANGE 1: Use the Bazzite variant specifically
+          variant: Bazzite
           iso_name: MistyOS.iso
-          display_name: "MistyOS"
+          # CHANGE 2: These flags force the Live Desktop + New Web UI
           enable_live_workstation: true
           enable_moby_workaround: true
-          extra_boot_params: "liveimg rd.live.image inst.webui quiet splash"
+          extra_boot_params: "liveimg inst.webui quiet splash"
 
       - name: Upload ISO as artifact
         id: upload
