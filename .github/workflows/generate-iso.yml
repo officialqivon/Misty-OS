@@ -14,6 +14,12 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Make hook executable
+        run: chmod +x ${{ github.workspace }}/installer/configure-iso.sh
+
+      - name: Build ISO
+        uses: ublue-os/titanoboa@main
+
       - name: Build ISO
         uses: ublue-os/titanoboa@main
         id: build
